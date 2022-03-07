@@ -5,15 +5,21 @@
       <div slot="center">购物街</div>
     </nav-bar>
 
+    <tab-control :titles="['流行','新款','精选']"
+                 @tabControlClick = "tabControlClick"
+                 ref = "tabControlUp" class = "tabControlUp" v-show="isFixed"></tab-control>
+
     <scroll class="content" ref = "scroll" :probe-type="3"
             @scroll = "contentScroll"
             :pull-up-load ="true"
             @pullingUp = "loadMoreGoods">
 
-      <home-swiper :banners="banners"></home-swiper>
+      <home-swiper :banners="banners" @swiperImgLoad = "swiperImgLoad"></home-swiper>
       <home-recommend-view :recommends="recommends"></home-recommend-view>
       <home-fashion-view></home-fashion-view>
-      <tab-control :titles="['流行','新款','精选']" @tabControlClick = "tabControlClick"></tab-control>
+      <tab-control :titles="['流行','新款','精选']"
+                   @tabControlClick = "tabControlClick"
+                   ref = "tabControlDown"></tab-control>
       <goods-list :goods = "goods[currentType].list"></goods-list>
 
     </scroll>
@@ -38,6 +44,7 @@ import BackTop from "components/content/backTop/BackTop";
 import GoodsList from "components/content/goods/GoodsList";
 
 import {getHomeMultiData,getHomeGoodsData} from "network/home";
+import {debounce} from "common/utils";
 
 export default {
   name: "Home",
@@ -72,7 +79,12 @@ export default {
       goodsType:['pop','new','sell'],
       currentType:'pop',
 
-      isShowBackTop:false
+      isShowBackTop:false,
+      tabControlOffsetTop:0,
+      isFixed:false,
+      isPopY:0,
+      isNewY:0,
+      isSellY:0,
 
     }
 
@@ -98,8 +110,8 @@ export default {
 
   mounted() {
 
-    //在home创建的时候就要对scroll进行设定 可滚动高度
-    const refresh = this.debounce(this.$refs.scroll.refresh,50);
+    //在home创建的时候就要对scroll进行设定 可滚动高度 在这里使用防抖动函数
+    const refresh = debounce(this.$refs.scroll.refresh,50);
     this.$bus.$on("ItemImgLoad",()=>{
 
       refresh();
@@ -108,49 +120,82 @@ export default {
 
   },
 
+  activated() {
+
+
+    // if(this.currentType == 'pop'){
+    //
+    //   this.$refs.scroll.scrollIn(0,this.isPopY,5)
+    //
+    // }
+    //
+    // if(this.currentType == 'new'){
+    //
+    //   this.$refs.scroll.scrollIn(0,this.isNewY,5)
+    //
+    // }
+    //
+    // if(this.currentType == 'sell'){
+    //
+    //   this.$refs.scroll.scrollIn(0,this.isSellY,5)
+    //
+    // }
+    // this.$refs.scroll.refresh();
+
+  },
+  deactivated() {
+
+    // if(this.currentType == 'pop'){
+    //
+    //   this.isPopY = this.$refs.scroll.scroll.y;
+    //
+    // }
+    //
+    // if(this.currentType == 'new'){
+    //
+    //   this.isNewY = this.$refs.scroll.scroll.y;
+    //
+    // }
+    //
+    // if(this.currentType == 'sell'){
+    //
+    //   this.isSellY = this.$refs.scroll.scroll.y;
+    //
+    // }
+    //
+    // console.log(this.isSellY)
+    // console.log(this.isPopY)
+    // console.log(this.isNewY)
+
+
+  },
   methods:{
 
     /*
-      防抖动函数
-    */
-
-    /*
-       1. timer = null
-       2. timer != null
-       30.timer != null
-
-     */
-    debounce(func,delay = 10){
-
-      let timer = null
-
-      return function (...args){
-
-        if(timer) clearTimeout(timer)
-
-        timer = setTimeout(()=>{
-
-            func.apply(this,args)
-
-        },delay)
-
-      }
-
-    },
-    /*
       监听事件
      */
+    //监听轮播图是否加载
+    swiperImgLoad() {
+
+      this.tabControlOffsetTop = this.$refs.tabControlDown.$el.offsetTop;  //将tabControl的位置存下来
+
+    },
+
     //商品目录滚动事件 监听滚动距离
     contentScroll(position){
 
+      //1.监听商品目录是否达到可以显示返回顶部按钮距离
       this.isShowBackTop = position.y < -1000  /*超过-1000就显示回顶部按钮*/
+
+      //2.监听tabControl是否可以浮空显示
+      this.isFixed = -position.y > this.tabControlOffsetTop
 
     },
 
     //商品上拉加载商品信息事件
     loadMoreGoods(){
 
-      console.log("尝试加载数据");
+      // console.log("尝试加载数据");
       this.getHomeGoodsDataMethod(this.currentType);   //使用加载商品信息方法
 
     },
@@ -159,6 +204,8 @@ export default {
     tabControlClick(index){
 
       this.currentType = this.goodsType[index]
+      this.$refs.tabControlUp.currentIndex = index;   //隐藏在上面的精品栏与下面的精品栏 按钮点击下标保持一致
+      this.$refs.tabControlDown.currentIndex = index;
 
     },
 
@@ -194,7 +241,7 @@ export default {
 
       }).then(()=>{
 
-        // this.$refs.scroll.finishPullUpData();//上拉加载完之后 结束 使之后可以继续上拉
+         this.$refs.scroll && this.$refs.scroll.finishPullUpData();//上拉加载完之后 结束 使之后可以继续上拉
 
       })
 
@@ -211,9 +258,9 @@ export default {
 <style scoped>
 
   #home{
-
-    /*padding-top: 44px;*/
+    /*padding-top: 78px;*/
     height: 100vh;
+    position: relative;
 
   }
 
@@ -221,18 +268,31 @@ export default {
 
     background-color: var(--color-tint);
     color: white;
-    position: sticky;
-    top:0px;
-    z-index: 9;
+    /*position: sticky;*/
+    /*top:0;*/
+    /*z-index: 9;*/
 
   }
 
   .content{
 
     /*height: calc(100% - 93px);*/
-    height: 100%;
+    position: absolute;
+    top: 43px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
     overflow: hidden;
 
+  }
+
+  .tabControlUp{
+
+    position: relative;
+    top: -2px;
+    background: white;
+    z-index: 9;
+  /*使用top:-1px是因为导航栏与tabControl中间还有缝隙*/
   }
 
 </style>

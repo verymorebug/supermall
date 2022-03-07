@@ -62,11 +62,11 @@ export default {
     height: 40px;
     text-align: center;
 
-    position: sticky;
-    top: 44px;
-    background-color: white;
+    /*position: sticky;*/
+    /*top: 44px;*/
+    /*background-color: white;*/
 
-    z-index: 8;
+    /*z-index: 8;*/
 
   }
 

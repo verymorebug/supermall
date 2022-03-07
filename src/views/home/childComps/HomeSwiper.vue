@@ -2,12 +2,12 @@
 
   <swiper>
 
-    <swiper-item v-for = "(item,index) in banners" :key = "index">
+    <swiper-item v-for = "(item,index) in banners" :key = "index" >
 
       <a v-bind:href="item.link">
-        <img :src = "item.image">
+        <img :src = "item.image" @load = "swiperImgLoad">
       </a>
-
+      <!--    监听轮播图图片是否已经加载完成   -->
     </swiper-item>
 
   </swiper>
@@ -34,10 +34,34 @@ export default {
     }
 
   },
+  data(){
+
+    return{
+
+      isLoad:false
+
+    }
+
+  },
+
   components:{
 
     Swiper,
     SwiperItem
+
+  },
+
+  methods:{
+
+    swiperImgLoad(){
+
+
+      if(!this.isLoad) {  //通过此变量来控制只向外发出一次轮播图加载完成信息
+
+        this.$emit("swiperImgLoad");//表示此图片已经加载完成
+        this.isLoad = true;
+      }
+    }
 
   }
 
