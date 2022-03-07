@@ -18,6 +18,23 @@ import BScroll from "better-scroll";
 
 export default {
   name: "Scroll",
+
+  props:{
+
+    probeType:{
+
+      type:Number,
+      default:0
+
+    },
+    pullUpLoad:{
+
+      type:Boolean,
+      default: false
+
+    }
+
+  },
   components:{
 
     BScroll
@@ -34,24 +51,52 @@ export default {
 
   },
 
-  mounted() {
+  mounted() { //mounted里面才可以直接操作dom
 
     this.scroll = new BScroll(this.$refs.wrapper,{
 
       click:true,
-      pullUpLoad:true,
-      probeType:3
+      probeType:this.probeType,
+      pullUpLoad:this.pullUpLoad
+
+    })
+
+    this.scroll.on("scroll",(position)=>{
+
+      this.$emit("scroll",position);
+
+    })
+
+    this.scroll.on("pullingUp",()=>{
+
+      console.log("上拉事件");
+      this.$emit("pullingUp")  //把上拉事件传给父组件
+
 
     })
 
   },
+
   methods:{
 
     scrollIn(x,y,time = 100){
 
       this.scroll.scrollTo(x,y,time);
 
+    },
+
+    refresh(){
+
+      this.scroll.refresh();
+
+    },
+
+    finishPullUpData(){
+
+      this.scroll.finishPullUp();
+
     }
+
 
   }
 }

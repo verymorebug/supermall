@@ -5,7 +5,10 @@
       <div slot="center">购物街</div>
     </nav-bar>
 
-    <scroll class="content" ref = "scroll">
+    <scroll class="content" ref = "scroll" :probe-type="3"
+            @scroll = "contentScroll"
+            :pull-up-load ="true"
+            @pullingUp = "loadMoreGoods">
 
       <home-swiper :banners="banners"></home-swiper>
       <home-recommend-view :recommends="recommends"></home-recommend-view>
@@ -15,7 +18,7 @@
 
     </scroll>
 
-    <back-top @click.native = "backClick"></back-top>
+    <back-top @click.native = "backClick" v-show="isShowBackTop"></back-top>
 
   </div>
 </template>
@@ -67,7 +70,10 @@ export default {
 
       },
       goodsType:['pop','new','sell'],
-      currentType:'pop'
+      currentType:'pop',
+
+      isShowBackTop:false
+
     }
 
   },
@@ -86,15 +92,32 @@ export default {
     /*
       监听事件
      */
+    //商品目录滚动事件 监听滚动距离
+    contentScroll(position){
+
+      this.isShowBackTop = position.y < -1000  /*超过-1000就显示回顶部按钮*/
+
+    },
+
+    //商品上拉加载商品信息事件
+    loadMoreGoods(){
+
+      console.log("尝试加载数据");
+      this.getHomeGoodsDataMethod(this.currentType);   //使用加载商品信息方法
+
+    },
+
+    //商品类别监听
     tabControlClick(index){
 
       this.currentType = this.goodsType[index]
 
     },
 
+    //返回顶部按钮监听
     backClick(){
 
-      this.$refs.scroll.scrollIn(0,0,1000)
+      this.$refs.scroll.scrollIn(0,0,500)
 
     },
 
@@ -121,6 +144,10 @@ export default {
         console.log(res);
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
+
+      }).then(()=>{
+
+        this.$refs.scroll.finishPullUpData();//上拉加载完之后 结束 使之后可以继续上拉
 
       })
 
