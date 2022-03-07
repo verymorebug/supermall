@@ -85,10 +85,58 @@ export default {
     this.getHomeGoodsDataMethod('new');
     this.getHomeGoodsDataMethod('sell');
 
+    //不能再create里面操作  可能拿不到元素
+    //在home创建的时候就要对scroll进行设定 可滚动高度
+    //
+    // this.$bus.$on("ItemImgLoad",()=>{
+    //
+    //     this.$refs.scroll.refresh();
+    //
+    // })
+
+  },
+
+  mounted() {
+
+    //在home创建的时候就要对scroll进行设定 可滚动高度
+    const refresh = this.debounce(this.$refs.scroll.refresh,50);
+    this.$bus.$on("ItemImgLoad",()=>{
+
+      refresh();
+
+    })
+
   },
 
   methods:{
 
+    /*
+      防抖动函数
+    */
+
+    /*
+       1. timer = null
+       2. timer != null
+       30.timer != null
+
+     */
+    debounce(func,delay = 10){
+
+      let timer = null
+
+      return function (...args){
+
+        if(timer) clearTimeout(timer)
+
+        timer = setTimeout(()=>{
+
+            func.apply(this,args)
+
+        },delay)
+
+      }
+
+    },
     /*
       监听事件
      */
@@ -129,7 +177,7 @@ export default {
       getHomeMultiData().then(res=>{
 
         this.banners = res.data.banner.list;
-        console.log(res.data)
+        // console.log(res.data)
         this.recommends = res.data.recommend.list;
 
       })
@@ -141,13 +189,12 @@ export default {
 
       getHomeGoodsData(type,page).then(res=>{
 
-        console.log(res);
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
 
       }).then(()=>{
 
-        this.$refs.scroll.finishPullUpData();//上拉加载完之后 结束 使之后可以继续上拉
+        // this.$refs.scroll.finishPullUpData();//上拉加载完之后 结束 使之后可以继续上拉
 
       })
 

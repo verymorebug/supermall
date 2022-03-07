@@ -57,7 +57,7 @@ export default {
 
       click:true,
       probeType:this.probeType,
-      pullUpLoad:this.pullUpLoad
+      // pullUpLoad:this.pullUpLoad
 
     })
 
@@ -67,13 +67,13 @@ export default {
 
     })
 
-    this.scroll.on("pullingUp",()=>{
-
-      console.log("上拉事件");
-      this.$emit("pullingUp")  //把上拉事件传给父组件
-
-
-    })
+    // this.scroll.on("pullingUp",()=>{
+    //
+    //   console.log("上拉事件");
+    //   this.$emit("pullingUp")  //把上拉事件传给父组件
+    //
+    //
+    // })
 
   },
 
@@ -81,19 +81,19 @@ export default {
 
     scrollIn(x,y,time = 100){
 
-      this.scroll.scrollTo(x,y,time);
+      this.scroll && this.scroll.scrollTo(x,y,time);
 
     },
 
     refresh(){
 
-      this.scroll.refresh();
+      this.scroll && this.scroll.refresh();
 
     },
 
     finishPullUpData(){
 
-      this.scroll.finishPullUp();
+      this.scroll && this.scroll.finishPullUp();
 
     }
 

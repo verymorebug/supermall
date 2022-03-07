@@ -1,7 +1,7 @@
 <template>
   <div class = "goodsListItem">
 
-    <img :src = "good_item.show.img">
+    <img :src = "good_item.show.img" @load = "imgLoad">
 
     <div class = "goodsInfo">
 
@@ -29,7 +29,17 @@ export default {
       }
 
     }
+  },
+  methods:{
 
+    imgLoad(){
+
+
+      //this.$bus.$emit("goodsImgLoad");
+      this.$bus.$emit("ItemImgLoad")
+
+
+    }
 
   }
 
