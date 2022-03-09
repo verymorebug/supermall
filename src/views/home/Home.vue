@@ -122,50 +122,50 @@ export default {
 
   activated() {
 
+    this.$refs.scroll.refresh();
+    if(this.currentType == 'pop'){
 
-    // if(this.currentType == 'pop'){
-    //
-    //   this.$refs.scroll.scrollIn(0,this.isPopY,5)
-    //
-    // }
-    //
-    // if(this.currentType == 'new'){
-    //
-    //   this.$refs.scroll.scrollIn(0,this.isNewY,5)
-    //
-    // }
-    //
-    // if(this.currentType == 'sell'){
-    //
-    //   this.$refs.scroll.scrollIn(0,this.isSellY,5)
-    //
-    // }
-    // this.$refs.scroll.refresh();
+      this.$refs.scroll.scrollIn(0,this.isPopY,5)
+
+    }
+
+    if(this.currentType == 'new'){
+
+      this.$refs.scroll.scrollIn(0,this.isNewY,5)
+
+    }
+
+    if(this.currentType == 'sell'){
+
+      this.$refs.scroll.scrollIn(0,this.isSellY,5)
+
+    }
+
 
   },
   deactivated() {
 
-    // if(this.currentType == 'pop'){
-    //
-    //   this.isPopY = this.$refs.scroll.scroll.y;
-    //
-    // }
-    //
-    // if(this.currentType == 'new'){
-    //
-    //   this.isNewY = this.$refs.scroll.scroll.y;
-    //
-    // }
-    //
-    // if(this.currentType == 'sell'){
-    //
-    //   this.isSellY = this.$refs.scroll.scroll.y;
-    //
-    // }
-    //
-    // console.log(this.isSellY)
-    // console.log(this.isPopY)
-    // console.log(this.isNewY)
+    if(this.currentType == 'pop'){
+
+      this.isPopY = this.$refs.scroll.scroll.y;
+
+    }
+
+    if(this.currentType == 'new'){
+
+      this.isNewY = this.$refs.scroll.scroll.y;
+
+    }
+
+    if(this.currentType == 'sell'){
+
+      this.isSellY = this.$refs.scroll.scroll.y;
+
+    }
+
+    console.log(this.isSellY)
+    console.log(this.isPopY)
+    console.log(this.isNewY)
 
 
   },

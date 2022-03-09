@@ -1,5 +1,5 @@
 <template>
-  <div class = "goodsListItem">
+  <div class = "goodsListItem" @click = "showDetail">
 
     <img :src = "good_item.show.img" @load = "imgLoad">
 
@@ -38,6 +38,13 @@ export default {
       //this.$bus.$emit("goodsImgLoad");
       this.$bus.$emit("ItemImgLoad")
 
+
+    },
+    showDetail(){
+
+      console.log("展示商品详情");
+      this.$router.push("/detail/"+this.good_item.iid);
+      console.log(this.good_item);
 
     }
 
