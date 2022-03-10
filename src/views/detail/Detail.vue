@@ -12,6 +12,7 @@
                            @detailGoodsImageLoad = "detailGoodsImageLoad">
         </detail-goods-info>
         <detail-rule-info :goods-params = "goodsParams"></detail-rule-info>
+        <detail-comment-info :comment-message="goodsComment"></detail-comment-info>
 
       </scroll>
     </div>
@@ -25,11 +26,13 @@ import DetailSwiper from "./childComps/DetailSwiper";
 import DetailBaseInfo from "./childComps/DetailBaseInfo";
 import DetailShopInfo from "./childComps/DetailShopInfo";
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
+import DetailRuleInfo from "./childComps/DetailRuleInfo";
+import DetailCommentInfo from "./childComps/DetailCommentInfo";
 
 import Scroll from "components/common/scroll/Scroll";
 
 import {getShopDetail,Goods,Shop,GoodsParam} from "network/detail";
-import DetailRuleInfo from "views/detail/childComps/DetailRuleInfo";
+
 
 
 export default {
@@ -41,6 +44,7 @@ export default {
     DetailNavbar,
     DetailShopInfo,
     DetailGoodsInfo,
+    DetailCommentInfo,
 
     Scroll
 
@@ -56,7 +60,9 @@ export default {
       shopMessage:{},     //店铺信息
       goodsShow:{},      //展示商品的信息
 
-      goodsParams:{}      //商品尺码等信息
+      goodsParams:{},      //商品尺码等信息
+
+      goodsComment:{}      //商品评论
 
     }
 
@@ -105,6 +111,9 @@ export default {
         //5.获得商品尺码等信息
         this.goodsParams = new GoodsParam(result.itemParams.info,result.itemParams.rule)
         console.log(this.goodsParams);
+
+        //6.获得商品评论信息
+        this.goodsComment = result.rate;
 
       });
 
