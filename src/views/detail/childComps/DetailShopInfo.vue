@@ -79,8 +79,6 @@ export default {
 
     simplifyNum(number){
 
-      console.log(number)
-
       if(number > 10000)
         return (number/10000).toFixed(2)+"万"  //保存两位小数 四舍五入
       return number;
@@ -95,7 +93,7 @@ export default {
 <style scoped>
   .shop-bar{
 
-    height: 590px;
+    height: 240px;
     /*background: #ff8198;*/
     border-bottom: 4px solid rgba(100,100,100,0.1);
 
