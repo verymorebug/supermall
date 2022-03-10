@@ -1,16 +1,20 @@
 <template>
   <div class = "rule-info">
 
-    <table class = "rule-table" v-if = "goodsParams.sizes">
+    <div v-if = "goodsParams.sizes" v-for="tables in goodsParams.sizes">
 
+      <table class = "rule-table">
 
-      <tr v-for = "items in goodsParams.sizes[0]">
+        <tr v-for = "items in tables">
 
-        <td v-for = "item in items">{{item}}</td>
+          <td v-for = "item in items">{{item}}</td>
 
-      </tr>
+        </tr>
 
-    </table>
+      </table>
+
+    </div>
+
 
     <table class = "goods-table">
 
