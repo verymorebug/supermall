@@ -13,6 +13,18 @@ export function getShopDetail(iid){
 
 }
 
+export function getShopDetailRecommend(){
+
+  const config = {
+
+    url:'recommend'
+
+  }
+
+  return request(config);
+
+}
+
 export class Goods{
 
   constructor(itemInfo,columns,services) {

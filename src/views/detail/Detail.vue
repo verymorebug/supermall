@@ -13,6 +13,7 @@
         </detail-goods-info>
         <detail-rule-info :goods-params = "goodsParams"></detail-rule-info>
         <detail-comment-info :comment-message="goodsComment"></detail-comment-info>
+        <recommend-goods-list :goods = "goodsRecommend"></recommend-goods-list>
 
       </scroll>
     </div>
@@ -31,13 +32,18 @@ import DetailCommentInfo from "./childComps/DetailCommentInfo";
 
 import Scroll from "components/common/scroll/Scroll";
 
-import {getShopDetail,Goods,Shop,GoodsParam} from "network/detail";
+import {getShopDetail,getShopDetailRecommend,Goods,Shop,GoodsParam} from "network/detail";
+import RecommendGoodsList from "components/content/recommendgoods/RecommendGoodsList";
+import GoodsList from "components/content/goods/GoodsList";
+import {debounce} from "common/utils";
 
 
 
 export default {
   name: "Detail",
   components: {
+    GoodsList,
+    RecommendGoodsList,
     DetailRuleInfo,
     DetailBaseInfo,
     DetailSwiper,
@@ -62,7 +68,9 @@ export default {
 
       goodsParams:{},      //商品尺码等信息
 
-      goodsComment:{}      //商品评论
+      goodsComment:{},      //商品评论
+
+      goodsRecommend:[],     //商品推荐
 
     }
 
@@ -71,6 +79,29 @@ export default {
   created() {
 
       this.getShopDetailData();
+      this.getShopRecommend();
+
+  },
+  mounted() {
+
+    this.detailGoodsRecommendImgLoad();
+
+  },
+  activated() {
+
+    // this.iid = this.$route.params.iid;
+    // console.log(this.iid);
+    // getShopDetail(this.iid).then((res)=>{
+    //
+    //   this.shopDetail = res.result;
+    //
+    //   this.topImages = this.shopDetail.itemInfo.topImages;
+    //
+    //   console.log(this.topImages);
+    //
+    // });
+
+    //console.log(this.shopDetail)
 
   },
   methods:{
@@ -78,9 +109,21 @@ export default {
     detailGoodsImageLoad(){
 
       this.$refs.detailScroll.refresh();
-      console.log("数据已经刷新");
 
     },
+
+    detailGoodsRecommendImgLoad(){
+
+      const refresh = debounce(this.$refs.detailScroll.refresh,50);
+
+      this.$bus.$on("detailRecommendImgLoad",()=>{
+
+        refresh();
+
+      })
+
+    },
+
     //获得商品数据
     getShopDetailData(){
 
@@ -119,25 +162,19 @@ export default {
 
     },
 
+    getShopRecommend(){
+
+      getShopDetailRecommend().then(res=>{
+
+        this.goodsRecommend = res.data.list;
+
+      })
+
+    }
+
 
   },
-  activated() {
 
-    // this.iid = this.$route.params.iid;
-    // console.log(this.iid);
-    // getShopDetail(this.iid).then((res)=>{
-    //
-    //   this.shopDetail = res.result;
-    //
-    //   this.topImages = this.shopDetail.itemInfo.topImages;
-    //
-    //   console.log(this.topImages);
-    //
-    // });
-
-    //console.log(this.shopDetail)
-
-  }
 
 
 }

@@ -43,7 +43,7 @@ export default {
       if(this.listImgLength === ++this.imgCount){
 
         this.$emit("detailGoodsImageLoad");
-        console.log("数据已经加载");
+          // console.log("数据已经加载");
 
       }
     }

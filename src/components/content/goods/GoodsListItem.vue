@@ -1,7 +1,7 @@
 <template>
   <div class = "goodsListItem" @click = "showDetail">
 
-    <img :src = "good_item.show.img" @load = "imgLoad">
+    <img :src = "showImg" @load = "imgLoad">
 
     <div class = "goodsInfo">
 
@@ -30,6 +30,17 @@ export default {
 
     }
   },
+
+  computed:{
+
+    showImg(){
+
+      return this.good_item.image||this.good_item.show.img
+
+    }
+
+  },
+
   methods:{
 
     imgLoad(){
