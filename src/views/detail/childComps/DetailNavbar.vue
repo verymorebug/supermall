@@ -11,8 +11,15 @@
       <div slot="center" class = "center_title">
 
         <div v-for = "(item,index) in titles" class = "title_item"
-             :class = "{active:index == currentIndex}"
+             :class = "{active:index === currentIndex}"
              @click = "centerItemClick(index)">{{item}}</div>
+
+<!--  3 3
+   cur = 3 scur = 3
+   cur = 3 scur = 0
+   3!==2 1 0  ->
+
+3 2 1 0      -->
 
       </div>
     </nav-bar>
@@ -40,7 +47,7 @@ export default {
 
       titles:["商品","详情","评论","推荐"],
       currentIndex:0,
-      currentType:null
+      currentType:null,
 
     }
 
@@ -52,12 +59,14 @@ export default {
 
       this.currentIndex = index;
       this.currentType  = this.titles[this.currentIndex];
-      console.log("我点击的是"+this.currentType);
+
+      this.$emit("navItemClick",index);
+
     },
 
     backClick(){
 
-      this.$router.back();
+      this.$router.back();  //返回按键  通过路由实现
 
     }
 

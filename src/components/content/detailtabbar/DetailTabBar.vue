@@ -1,14 +1,5 @@
 <template>
 
-  <tab-bar>
-
-    <tab-bar-item>
-
-
-    </tab-bar-item>
-
-  </tab-bar>
-
 </template>
 
 <script>

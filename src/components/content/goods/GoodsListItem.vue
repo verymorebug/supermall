@@ -53,9 +53,9 @@ export default {
     },
     showDetail(){
 
-      console.log("展示商品详情");
+      // console.log("展示商品详情");
       this.$router.push("/detail/"+this.good_item.iid);
-      console.log(this.good_item);
+      // console.log(this.good_item);
 
     }
 

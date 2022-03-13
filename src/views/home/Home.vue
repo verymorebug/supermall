@@ -163,9 +163,9 @@ export default {
 
     }
 
-    console.log(this.isSellY)
-    console.log(this.isPopY)
-    console.log(this.isNewY)
+    // console.log(this.isSellY)
+    // console.log(this.isPopY)
+    // console.log(this.isNewY)
 
 
   },
