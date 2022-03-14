@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+    <div id ="app">
+
+      <input type = "text" v-model="message">
+      {{message}}
+
+    </div>
+
+    <script>
+
+      class Vue{
+
+        constructor(options) {
+
+          //1.保存数据
+            this.$options = options;
+            this.$data = options.data;      //this.$data是一个存储数据的键值对 vue[key] = value
+            this.$el = options.el;
+
+          //2.将data添加到响应式系统中
+          new Observer(this.$data);
+
+          //3.代理this.$data的数据
+          Object.keys(this.$data).forEach(key =>{
+
+            this._proxy(key);
+
+          })
+
+          //4.处理el
+          new Compiler(this.$el,this);
+
+        }
+
+        _proxy(key){
+
+          Object.defineProperty(this,key,{
+
+            configurable:true,
+            enumerable:true,
+
+            set(newValue){
+
+              this.$data[key] = newValue;
+
+            },
+
+            get(){
+
+              return this.$data[key];
+
+            }
+
+          })
+
+
+
+
+        }
+
+      }
+
+      class Observer{
+
+        constructor(data) {
+
+          this.data = data;
+
+          Object.keys(data).forEach(key =>{
+
+            this.defineReactive(this.data,key,data[key])  //将值传过去
+
+          })
+
+        }
+
+        defineReactive(data,key,value){
+
+          const dep = new Dep();
+
+          Object.defineProperty(data,key,{
+
+            enumerable:true,
+            configurable:true,
+
+            get(){
+
+              if(Dep.target){
+
+                dep.addSub(Dep.target)
+
+              }
+              return value;
+
+            },
+
+            set(newValue) {
+
+              if (newValue === value) {
+
+                  return
+              }
+
+              value = newValue
+              dep.notify()
+
+            }
+
+          })
+
+        }
+
+      }
+
+      class Dep{
+
+        constructor() {
+
+          this.subs = []
+
+        }
+
+        addSub(sub){
+
+          this.subs.push(sub);  //添加订阅者
+
+        }
+
+        //通知所有订阅者
+        notify(){
+
+          this.subs.forEach(item =>{
+
+            item.update();   //订阅者数据更新
+
+          })
+
+        }
+
+
+      }
+
+      class Watcher{
+
+        constructor(node,name,vm) {
+
+          this.node = node;
+          this.name = name;
+          this.vm = vm;
+          Dep.target = this; //赋值本Watcher对象
+          this.update();
+          Dep.target = null;
+
+        }
+
+        update(){
+
+          this.node.nodeValue = this.vm[this.name]  //vm其实就是Vue实例  从Vue实例中取出值  --->get()方法 为什么不从this.$data里面获取 --->涉及到代理
+          console.log(this.node.nodeName)
+          console.log(this.node.nodeValue)
+
+        }
+
+      }
+
+
+      const reg = /\{\{(.*)\}\}/
+      // .* 0个或者多个 匹配任意内容 除特殊字符以外
+
+
+      class Compiler{
+
+        constructor(el,vm) {
+
+          this.el = document.querySelector(el);
+          this.vm = vm;
+
+          this.frag = this._createFragment()
+          this.el.appendChild(this.frag)
+
+        }
+
+        _createFragment(){
+
+          const frag = document.createDocumentFragment();
+
+          let child;
+          while(child = this.el.firstChild){
+
+            this._compile(child);
+            frag.appendChild(child);
+
+          }
+
+          return  frag
+
+        }
+
+        _compile(node){
+
+          if(node.nodeType === 1){ //标签节点
+
+            const attrs = node.attributes
+            if(attrs.hasOwnProperty('v-model')){
+
+              const name = attrs['v-model'].nodeValue
+              node.addEventListener('input',e =>{
+
+                this.vm[name] = e.target.value;
+                console.log(this.vm[name])
+
+              })
+
+            }
+
+          }
+
+
+          if(node.nodeType === 3){  //文本节点
+
+            console.log(reg.test(node.nodeValue))
+            if(reg.test(node.nodeValue)){
+
+              const name = RegExp.$1.trim();
+              console.log(name)
+
+              new Watcher(node,name,this.vm);
+
+            }
+
+          }
+
+        }
+
+      }
+
+
+
+
+    </script>
+
+    <script>
+      const app = new Vue({
+
+
+        el:'#app',
+        data:{
+
+          message:'哈哈哈'
+
+        }
+
+
+      })
+
+    </script>
+
+</body>
+</html>

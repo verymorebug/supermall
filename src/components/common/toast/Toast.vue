@@ -30,7 +30,7 @@ export default {
       this.isShow = true;
       this.message = message;
 
-      console.log("使用的是通过插件形式的Toast");
+      // console.log("使用的是通过插件形式的Toast");
 
       setTimeout(()=>{
 
@@ -61,7 +61,6 @@ export default {
     top: 50%;
     left: 50%;
 
-    transition: all 3s;
 
   }
 

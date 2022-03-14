@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+  <div id = "app">
+
+    {{message}}  //张三<br>
+    {{message}}  //李四<br>
+    {{message}}  //王五<br>
+
+  </div>
+
+  <script src = "./node_modules/vue/dist/vue.js"></script>
+
+  <script>
+
+    const obj = {
+
+      message:'Vue响应式原理真的很不戳',
+      name:"dwaadwa",
+      show:'marker'
+
+
+    }
+
+    /*
+ * 发布者订阅者模式
+ */
+
+    //发布者 通知订阅者更新
+    class Dep{
+
+      constructor(name) {
+
+        this.subs = []   //里面记录了谁要订阅属性 也就是谁在用属性 订阅者
+
+      }
+
+      //这里添加订阅者 watch
+      addSubs(watch){
+
+        this.subs.push(watch);
+
+      }
+
+      notify(){
+
+        this.subs.forEach(item =>{
+
+          item.update();  //通知所有人更新 发布者  -----通知---->  订阅者
+
+        })
+
+      }
+
+    }
+
+    //订阅者  知道谁在用
+    class Watcher{
+
+      constructor(name) {
+
+        this.name = name;
+
+      }
+
+      update(){
+
+        console.log(this.name+"发生了update");
+
+      }
+
+    }
+
+    const dep = new Dep("message");
+
+    //将这格订阅者watch放进去 (或者说使用者)
+    //一旦调用了get就创建Watcher
+    const w1  = new Watcher("张三");
+    dep.addSubs(w1);
+
+    const w2 = new Watcher("李四");
+    dep.addSubs(w2)
+
+    const w3 = new Watcher("王五");
+    dep.addSubs(w3)
+
+    //一旦值发生改变就通知 ->谁调用了set
+
+    dep.notify();  //发布者通知所有人
+
+    Object.keys(obj).forEach(key=>{
+
+      console.log(key+"       "+obj[key]);
+      let value = obj[key];
+      let newDep = new Dep(key)
+
+      Object.defineProperty(obj,key,{
+
+        set(newValue){   //设置该值
+
+          value = newValue
+          console.log("在set这里修改了值");
+          /*
+          *
+          * 告诉谁了？谁用告诉谁？谁在用
+          * 根据解析html代码，获取那些人有用到属性
+          * 张三/李四/王五
+          *
+          * */
+
+          /*
+           * 只要调用了set 说明数据更新了 所以订阅者要通知所有人(观察者)更新
+           *
+           */
+
+          dep.notify();
+          // newDep.notify();
+        },
+
+        get(){   //获得该值
+
+          // let watch = new Watcher(obj[key])
+          // newDep.addSubs(watch);
+          console.log("get函数返回一个值");
+          /*
+           * 使用了属性一定会调用get方法，因此得知谁在用
+           * 一旦发生变化就通知这些人---->发布者订阅者模式
+           * 张三:get
+           * 李四:get
+           * 王五:get
+           *
+           * 变化后通知到订阅者 他们要更新
+           * 张三: get -> update
+           * 李四: get -> update
+           * 王五: get -> update
+           *
+           */
+
+          return value
+
+        }
+
+      })
+
+    })
+
+
+
+  </script>
+
+  <script>
+
+    const app = new Vue({
+
+      el:"#app",
+      data:{
+
+        message:'Vue响应式原理真的很不戳',
+
+      }
+
+
+    });
+
+
+  </script>
+
+</body>
+</html>

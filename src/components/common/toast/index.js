@@ -4,10 +4,6 @@ const obj = {}
 
 obj.install = function (Vue){
 
-  // console.log(Toast);
-  //
-  // document.body.appendChild(Toast.$el);  //组件还未创建出来不能如此
-
   //1.创建组件构造器
   const Construct = Vue.extend(Toast);
 
@@ -23,7 +19,6 @@ obj.install = function (Vue){
 
   //5.在原型中加入Toast
   Vue.prototype.$toast = toast;
-  console.log("执行了obj里的install函数");
 
 }
 
