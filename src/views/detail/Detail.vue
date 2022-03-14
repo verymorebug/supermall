@@ -21,6 +21,7 @@
 
       <detail-bottom-bar v-on:addCart = "addCart"></detail-bottom-bar>
 
+
     </div>
 
 </template>
@@ -36,6 +37,7 @@ import DetailRuleInfo from "./childComps/DetailRuleInfo";
 import DetailCommentInfo from "./childComps/DetailCommentInfo";
 import DetailBottomBar from "./childComps/DetailBottomBar";
 import Scroll from "components/common/scroll/Scroll";
+
 
 import {backTopMixin} from "common/mixin";
 
@@ -53,6 +55,7 @@ export default {
   mixins:[backTopMixin],  //混入代码
 
   components: {
+
     DetailBottomBar,
     GoodsList,
     RecommendGoodsList,
@@ -64,7 +67,9 @@ export default {
     DetailGoodsInfo,
     DetailCommentInfo,
 
-    Scroll
+    Scroll,
+
+
 
   },
   data(){
@@ -87,6 +92,7 @@ export default {
 
       themeTopYs:[],          //按键点击后跳转对应的位置
       themeTopY:null,         //获取跳转的位置
+
 
     }
 
@@ -155,7 +161,7 @@ export default {
     addCart(){
 
       //获得购物车需要展示的信息
-      console.log("已添加进购物车");
+      // console.log("已添加进购物车");
       const cartGoods = {}
       cartGoods.title = this.goodsDetail.title;
       cartGoods.realPrice = this.goodsDetail.realPrice;
@@ -164,9 +170,13 @@ export default {
       cartGoods.iid = this.iid;
       cartGoods.count = 1;
 
-      console.log(cartGoods);
-      this.$store.dispatch("addCart",cartGoods);
-      console.log(this.$store.state.cartList);
+      // console.log(cartGoods);
+      this.$store.dispatch("addCart",cartGoods).then(res=>{
+
+         this.$toast.show(res);
+
+      })
+      // console.log(this.$store.state.cartList);
 
     },
 
