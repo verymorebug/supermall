@@ -69,8 +69,6 @@ export default {
 
     Scroll,
 
-
-
   },
   data(){
 
